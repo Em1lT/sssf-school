@@ -17,8 +17,6 @@ router.delete('/', (req, res) => {
     res.send('With this endpoint you can delete cats.');
 });
 
-router.get('/:id', (req, res) => {
-    res.send('You reqested a cat whose id is ' + req.params.id);
-});
+router.get('/:id', catController.cat_get);
 
 module.exports = router
