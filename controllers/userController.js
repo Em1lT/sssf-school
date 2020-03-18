@@ -15,10 +15,15 @@ const user_get = async (req, res) => {
     } else {
         res.json(user);
     }
+}
 
+const user_create_post = async (req, res) => {
+    let response = await userModel.addUser(req.body);
+    res.json(response);
 }
 
 module.exports = {
     user_list_get,
-    user_get
+    user_get,
+    user_create_post
 };

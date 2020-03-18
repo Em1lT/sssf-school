@@ -6,10 +6,7 @@ router.get('/:id',userController.user_get);
 
 router.get('/', userController.user_list_get);
 
-router.post('/', (req, res) => {
-    console.log(req.body);
-    res.send('With this endpoint you can list all users');
-});
+router.post('/', userController.user_create_post);
 
 router.delete('/', (req, res) => {
     res.send('delete password');

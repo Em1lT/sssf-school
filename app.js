@@ -6,6 +6,7 @@ const port = 3000;
 const cats = require('./routes/catRouter')
 const user = require('./routes/userRouter')
 
+app.use(express.urlencoded());
 app.use(bodyParser.json());
 app.use('/cat', cats)
 app.use('/user', user)
