@@ -11,6 +11,10 @@
   <ul>
     <!-- js creates list here -->
   </ul>
+  <form action="/uploadfile" enctype="multipart/form-data" method="POST"> 
+    <input type="file" name="myFile" />
+    <input type="submit" value="Upload a file"/>
+ </form>
   <h3>Add user</h3>
   <form action="http://localhost:3000/user" method="post" class="light-border">
     <input class="light-border" type="text" name="name" placeholder="Name" required>
