@@ -2,20 +2,22 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser')
-const passport = require('passport');
+const passport = require('./utils/pass');
 const port = 3000;
 const cats = require('./routes/catRouter')
 const user = require('./routes/userRouter')
-const login = require('./routes/authRoute')
+const authRoute = require('./routes/authRoute')
+require('./controllers/authController');
+
 
 app.use(express.urlencoded());
 app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/cat', cats)
-app.use('/user', user)
-app.use('/login', login)
+app.use('/cat',passport.authenticate('jwt', {session: false}), cats)
+app.use('/user',passport.authenticate('jwt', {session: false}), user)
+app.use('/auth', authRoute)
 
 app.get('/', (req, res) => {
   res.send('Home');
