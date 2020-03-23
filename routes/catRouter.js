@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer')
+const catModel = require('../models/model')
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './uploads/')
     },
@@ -21,11 +22,15 @@ const catController = require('../controllers/catController');
 router.get('/', catController.cat_list_get);
 
 
-router.post('/', upload.single('cat'), (req, res) => {
-    console.log(req.file);
-    console.log(req.body);
-    res.send("With this endpoint you can edit cats.");
-    
+router.post('/', upload.single('cat'), async (req, res) => {
+    const post = await catModel.create({
+        name: req.body.name,
+        age: req.body.age,
+        gender: req.body.gender,
+        color: req.body.color,
+        weight: req.body.weight
+    })
+    res.send("With this endpoint you can post cats." + post.name);    
   })
 
 router.put('/', (req, res) => {

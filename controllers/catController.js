@@ -1,21 +1,23 @@
 // Controller
 'use strict';
-const catModel = require('../models/catModel');
+const catModel = require('../models/model')
 
 const cats = catModel.cats;
 
-const cat_list_get = (req, res) => {
-    res.json(cats);
+const cat_list_get = async (req, res) => {
+
+    if (Object.keys(req.query).length === 0) {
+        res.json(await catModel.find({}));
+    } else {
+        res.json(await catModel.find().where('gender').equals(req.query.gender).where('weight').gt(req.query.weight).where('age').gt(req.query.age));
+    }
 };
 
-const cat_get = (req, res) => {
-    let cat = cats.filter(cat => cat.id == req.params.id)
+const cat_get = async (req, res) => {
+    console.log(req)
+    console.log("here1");
 
-    if (!cat.length) {
-        res.json("No cat found with that id!");
-    } else {
-        res.json(cat);
-    }
+    res.json(await catModel.find({}));
 }
 
 module.exports = {
