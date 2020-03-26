@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer')
-const catModel = require('../models/model')
+const catController = require('../controllers/catController');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -17,21 +17,10 @@ const upload = multer({
     storage: storage
 })
 
-const catController = require('../controllers/catController');
-
 router.get('/', catController.cat_list_get);
 
 
-router.post('/', upload.single('cat'), async (req, res) => {
-    const post = await catModel.create({
-        name: req.body.name,
-        age: req.body.age,
-        gender: req.body.gender,
-        color: req.body.color,
-        weight: req.body.weight
-    })
-    res.send("With this endpoint you can post cats." + post.name);    
-  })
+router.post('/', upload.single('cat'), catController.add_cat)
 
 router.put('/', (req, res) => {
     res.send('With this endpoint you can edit cats.');

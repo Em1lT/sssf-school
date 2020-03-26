@@ -4,16 +4,23 @@ require('dotenv').config();
 
 const express = require('express');
 const app = express();
-const bodyParser = require('body-parser')
-const port = 3000;
-const cats = require('./routes/catRouter')
-const user = require('./routes/userRouter')
+const bodyParser = require('body-parser');
+const port = 3001;
+const cats = require('./routes/catRouter');
+const user = require('./routes/userRouter');
+const authRoute = require('./routes/authRoute');
+const charger = require('./routes/chargeRouter');
+const passport = require('./utils/pass');
+require('./controllers/authController');
+
 const db = require('./module/db');
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use('/cat', cats)
 app.use('/user', user)
+app.use('/charge', charger)
+app.use('/auth', authRoute)
 
 app.get('/', (req, res) => {
   res.send('Home');

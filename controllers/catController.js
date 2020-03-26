@@ -1,8 +1,8 @@
 // Controller
 'use strict';
 const catModel = require('../models/model')
-
 const cats = catModel.cats;
+
 
 const cat_list_get = async (req, res) => {
 
@@ -14,13 +14,23 @@ const cat_list_get = async (req, res) => {
 };
 
 const cat_get = async (req, res) => {
-    console.log(req)
-    console.log("here1");
 
     res.json(await catModel.find({}));
 }
 
+const add_cat = async (req, res) => {
+    const post = await catModel.create({
+        name: req.body.name,
+        age: req.body.age,
+        gender: req.body.gender,
+        color: req.body.color,
+        weight: req.body.weight
+    })
+    res.send("With this endpoint you can post cats." + post.name);
+}
+
 module.exports = {
     cat_list_get,
-    cat_get
+    cat_get,
+    add_cat
 };
