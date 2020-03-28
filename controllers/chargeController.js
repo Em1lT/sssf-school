@@ -9,22 +9,26 @@ const levelTypeModel = require('../models/level')
 
 const charge_list_get = async (req, res) => {
 
-    let response = await stationModel.find().populate({
-        path: 'Connections',
-        populate: [{
-                path: 'LevelID',
-            },
-            {
-                path: 'ConnectionTypeID'
-            },
-            {
-                path: 'CurrentTypeID'
-            }
-        ]
-    }).limit(req.query.limit ? +req.query.limit : 10)
+    if (req.query.topRight != undefined && req.query.bottomLeft != undefined) {
+        res.json(await charge_get_within_coordinate(req));
+    } else {
+        let response = await stationModel.find().populate({
+            path: 'Connections',
+            populate: [{
+                    path: 'LevelID',
+                },
+                {
+                    path: 'ConnectionTypeID'
+                },
+                {
+                    path: 'CurrentTypeID'
+                }
+            ]
+        }).limit(req.query.limit ? +req.query.limit : 10)
 
 
-    res.json(response);
+        res.json(response);
+    }
 };
 
 const charge_get = async (req, res) => {
@@ -46,7 +50,25 @@ const charge_get = async (req, res) => {
     }))
 }
 
-const charge_get_within_coordinate = async (req, res) => {
+const charge_get_within_coordinate = async (req) => {
+    console.log("here", req.query.topRight)
+    console.log("here", req.query.bottomLeft)
+
+    const point = {
+        type: 'Polygon',
+        coordinates: [[
+         [25.036108, 60.2821946],
+         
+        //[60.2821946, 25.036108],
+         //[60.1552076, 24.7816538]   
+        ]]
+    }
+    try {
+        return await stationModel.find({}).where('location.coordinates').within(point);
+    } catch (e) {
+        return e;
+    }
+    
     //Create here to search locations within geolocation
     //res.json(await chargeModel.find('location').within());
 }
@@ -108,7 +130,6 @@ const charge_remove = async (req, res) => {
 module.exports = {
     charge_list_get,
     charge_get,
-    charge_get_within_coordinate,
     charge_post,
     charge_remove
 };

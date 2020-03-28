@@ -12,16 +12,18 @@ const stationSchema = new Schema({
         ref: 'Connection'
     }],
     Location: {
-        type: String,
-        enum: ['point'],
-        required: true,
+        coordinates: {
+            type: [Number],
+            required: true
+        }
     },
-    coordinates: {
-        type: [Number],
-        required: true
-
+    type: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true,
+        }
     }
-
 });
 
 module.exports = mongoose.model('station', stationSchema);
