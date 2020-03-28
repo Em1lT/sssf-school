@@ -1,15 +1,16 @@
 // Controller
 'use strict';
+
 const stationModel = require('../models/station');
 const connectionModel = require('../models/connection');
 const connectionTypeModel = require('../models/connectionType')
 const currentTypeModel = require('../models/currentType')
 const levelTypeModel = require('../models/level')
-
+const querystring = require('querystring');
 
 const charge_list_get = async (req, res) => {
 
-    if (req.query.topRight != undefined && req.query.bottomLeft != undefined) {
+    if (req.query.topRight != undefined && req.query.bottomLeft != undefined && req.query.topLeft != undefined) {
         res.json(await charge_get_within_coordinate(req));
     } else {
         let response = await stationModel.find().populate({
@@ -51,23 +52,36 @@ const charge_get = async (req, res) => {
 }
 
 const charge_get_within_coordinate = async (req) => {
-    console.log("here", req.query.topRight)
-    console.log("here", req.query.bottomLeft)
+    const topRight = JSON.parse(req.query.topRight);
+    const bottomLeft = JSON.parse(req.query.bottomLeft);
+    const topLeft = JSON.parse(req.query.topLeft);
+
 
     const point = {
         type: 'Polygon',
         coordinates: [
             [
-                [24.907159734175785, 60.145907436662064],
-                [24.83162872831641, 60.231930142317495],
-                [24.733095097945316, 60.21692654459033],
-                [24.679880071089848, 60.167775830363496],
-                [24.907159734175785, 60.145907436662064],
+                [topRight.lng, topRight.lat],
+                [bottomLeft.lng, bottomLeft.lat],
+                [topLeft.lng, topLeft.lat],
+                [topRight.lng, topRight.lat]
             ]
         ]
     }
     try {
-        return await stationModel.find({}).where('Location').within(point);
+        return await stationModel.find({}).where('Location').within(point).populate({
+            path: 'Connections',
+            populate: [{
+                    path: 'LevelID',
+                },
+                {
+                    path: 'ConnectionTypeID'
+                },
+                {
+                    path: 'CurrentTypeID'
+                }
+            ]
+        });
     } catch (e) {
         return e;
     }
