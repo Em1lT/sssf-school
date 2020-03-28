@@ -56,19 +56,22 @@ const charge_get_within_coordinate = async (req) => {
 
     const point = {
         type: 'Polygon',
-        coordinates: [[
-         [25.036108, 60.2821946],
-         
-        //[60.2821946, 25.036108],
-         //[60.1552076, 24.7816538]   
-        ]]
+        coordinates: [
+            [
+                [24.907159734175785, 60.145907436662064],
+                [24.83162872831641, 60.231930142317495],
+                [24.733095097945316, 60.21692654459033],
+                [24.679880071089848, 60.167775830363496],
+                [24.907159734175785, 60.145907436662064],
+            ]
+        ]
     }
     try {
-        return await stationModel.find({}).where('location.coordinates').within(point);
+        return await stationModel.find({}).where('Location').within(point);
     } catch (e) {
         return e;
     }
-    
+
     //Create here to search locations within geolocation
     //res.json(await chargeModel.find('location').within());
 }
