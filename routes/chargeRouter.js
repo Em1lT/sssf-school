@@ -1,16 +1,15 @@
 const express = require('express');
 const router = express.Router();
+const passport = require('passport');
 
 
 const chargeController = require('../controllers/chargeController');
 
 router.get('/', chargeController.charge_list_get);
 
-router.post('/', async (req, res) => {
-    res.send("With this endpoint you can post chargemap");    
-  })
+router.post('/', passport.authenticate('jwt', {session: false}), chargeController.charge_post);
 
-router.put('/', (req, res) => {
+router.put('/', passport.authenticate('jwt', {session: false}),  (req, res) => {
     res.send('With this endpoint you can edit chargemap.');
 });
 

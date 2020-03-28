@@ -1,14 +1,16 @@
 const mongoose = require('mongoose');
-
 const Schema = mongoose.Schema;
 
-const chargeSchema = new Schema({
+const stationSchema = new Schema({
     Title: String,
     AddressLine1: String,
     Town: String,
     StateOrProvince: String,
     Postcode: String,
-    Connections: Array,
+    Connections: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Connection'
+    }],
     Location: {
         type: String,
         enum: ['point'],
@@ -19,7 +21,7 @@ const chargeSchema = new Schema({
         required: true
 
     }
-    
+
 });
 
-module.exports = mongoose.model('charge', chargeSchema);
+module.exports = mongoose.model('station', stationSchema);

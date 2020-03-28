@@ -2,9 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
-const pass = require('../utils/pass');
+const passport = require('passport');
+require('../utils/pass');
 
-router.post('/login',  authController.login);
+router.post('/login', passport.authenticate('local', { session: false }), authController.login);
 
 router.post('/register',  authController.register);
 

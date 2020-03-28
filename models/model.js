@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const catSchema = new Schema({
-  name:  String,
+  name: String,
   age: {
     type: Number,
     min: 0
@@ -11,8 +11,8 @@ const catSchema = new Schema({
   gender: {
     type: String,
     enum: ['male', 'female'],
-    default: 'male' 
-  } ,
+    default: 'male'
+  },
   color: String,
   weight: Number
 });

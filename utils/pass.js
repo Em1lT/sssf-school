@@ -21,24 +21,18 @@ passport.deserializeUser(function (id, done) {
 // local strategy for username password login
 passport.use(new Strategy(
     async (username, password, done) => {
-        console.log('Local strategy: ', user); // result is binary row
-
-        console.log("username");
-        console.log("password");
-
         try {
-            console.log("username")
-            const [user] = await userModel.findOne({
+            const user = await userModel.findOne({
                 name: username
             })
 
-            console.log('Local strategy: ', user); // result is binary row
             if (user === undefined) {
 
                 return done(null, false, {
-                    message: 'Incorrect email.'
+                    message: 'Incorrect username'
                 });
             }
+
             if (user.password !== password) {
 
                 return done(null, false, {
@@ -57,18 +51,18 @@ passport.use(new Strategy(
     }));
 
 // TODO: JWT strategy for handling bearer token
-passport.use(new JWTStrategy({
+passport.use(new JWTStrategy ({
     jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
     secretOrKey: 'your_jwt_secret'
-}, (jwtPayload, done) => {
-    //find the user in db if needed. This functionality may be omitted if you store everything you'll need in JWT payload.
-    return userModel.getUserById(jwtPayload.user_id)
-        .then(user => {
-            return done(null, user);
-        })
-        .catch(err => {
-            return done(err);
-        });
+}, async (jwtPayload, done) => {
+    const user = await userModel.findOne({
+        name: jwtPayload
+    })
+    if(user == undefined) {
+        return done(err);
+    }
+
+    return done(null, user)
 }));
 
 module.exports = passport;

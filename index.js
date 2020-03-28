@@ -1,20 +1,20 @@
 'use strict';
 
 require('dotenv').config();
-
 const express = require('express');
 const app = express();
+const passport = require('passport');
 const bodyParser = require('body-parser');
 const port = 3001;
 const cats = require('./routes/catRouter');
 const user = require('./routes/userRouter');
 const authRoute = require('./routes/authRoute');
 const charger = require('./routes/chargeRouter');
-const passport = require('./utils/pass');
 require('./controllers/authController');
 
 const db = require('./module/db');
 
+app.use(passport.initialize());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
 app.use('/cat', cats)
