@@ -121,7 +121,7 @@ const charge_post = async (req, res) => {
         })*/
 
 
-        res.send("Adding station succesful " + station.Title)
+        res.send("Adding station succesful " + station.Title + " with id: " + station.id)
     } catch (err) {
         res.sendStatus(500);
         console.log(err);
