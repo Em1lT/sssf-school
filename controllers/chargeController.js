@@ -131,13 +131,16 @@ const charge_update = async (req, res) => {
     console.log(req.body.id)
     console.log(req.body.Title)
 
-    let response = await stationModel.findByIdAndUpdate({
-        _id: req.body.id
-    }, {
-        Title: req.body.Title
-    });
-
-    res.sendStatus(response);
+    try {
+        let response = await stationModel.findByIdAndUpdate({
+            _id: req.body.id
+        }, {
+            Title: req.body.Title
+        });
+    }catch (e) {
+        res.sendStatus(200);
+    }
+    res.sendStatus("Station with id " + req.body.id + "updated");
 }
 
 const charge_remove = async (req, res) => {
