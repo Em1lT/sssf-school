@@ -8,20 +8,13 @@ const stationSchema = new Schema({
     StateOrProvince: String,
     Postcode: String,
     Connections: [{
-        type: Schema.Types.ObjectId,
+        type: [Schema.Types.ObjectId],
         ref: 'Connection'
     }],
     Location: {
         coordinates: {
             type: [Number],
             required: true
-        }
-    },
-    type: {
-        type: {
-            type: String,
-            enum: ['Point'],
-            required: true,
         }
     }
 });

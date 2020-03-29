@@ -21,6 +21,7 @@ passport.deserializeUser(function (id, done) {
 // local strategy for username password login
 passport.use(new Strategy(
     async (username, password, done) => {
+
         try {
             const user = await userModel.findOne({
                 name: username
@@ -39,7 +40,6 @@ passport.use(new Strategy(
                     message: 'Incorrect password.'
                 });
             }
-
             return done(null, {
                 ...user
             }, {

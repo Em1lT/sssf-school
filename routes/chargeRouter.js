@@ -9,9 +9,7 @@ router.get('/', chargeController.charge_list_get);
 
 router.post('/', passport.authenticate('jwt', {session: false}), chargeController.charge_post);
 
-router.put('/', passport.authenticate('jwt', {session: false}),  (req, res) => {
-    res.send('With this endpoint you can edit chargemap.');
-});
+router.put('/', passport.authenticate('jwt', {session: false}), chargeController.charge_update);
 
 
 router.delete('/', (req, res) => {

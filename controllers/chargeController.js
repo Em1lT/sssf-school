@@ -92,28 +92,8 @@ const charge_get_within_coordinate = async (req) => {
 
 const charge_post = async (req, res) => {
     try {
-        const ConnectionTypeID = await connectionTypeModel.create({
-            FormalName: req.body.Connections.ConnectionType.FormalName,
-            Title: req.body.Connections.ConnectionType.Title
-        });
 
-        const CurrentTypeID = await currentTypeModel.create({
-            Description: req.body.Connections.CurrentType.Description,
-            Title: req.body.Connections.CurrentType.Title,
-        });
-
-        const LevelTypeID = await levelTypeModel.create({
-            Title: req.body.Connections.LevelType.Title,
-            Comments: req.body.Connections.LevelType.Comments,
-            IsFastChargeCapable: req.body.Connections.LevelType.IsFastChargeCapable
-        });
-
-        const connections = await connectionModel.create({
-            ConnectionTypeID,
-            CurrentTypeID,
-            LevelTypeID,
-            Quantity: req.body.Connections.Quantity
-        })
+        console.log(req.body.Connection[0].id);
 
         const station = await stationModel.create({
             Title: req.body.Title,
@@ -123,17 +103,41 @@ const charge_post = async (req, res) => {
             Postcode: req.body.Postcode,
             Location: {
                 type: "Point",
-                coordinates: [req.body.Location.long, req.body.Location.lat],
+                coordinates: [req.body.Location.lng, req.body.Location.lat],
             },
-            Connections: connections
-
+            Connections : [
+                req.body.Connection[0].id
+            ]
         })
 
-        res.send("Adding station succesful")
+        //Create a connection to db. You could make your own end point for it
+        /*const connections = await connectionModel.create({
+            ConnectionTypeID,
+            CurrentTypeID,
+            LevelTypeID,
+            Quantity: req.body.Connections.Quantity
+        })*/
+
+
+        res.send("Adding station succesful " + station.Title)
     } catch (err) {
         res.sendStatus(500);
         console.log(err);
     }
+}
+
+const charge_update = async (req, res) => {
+
+    console.log(req.body.id)
+    console.log(req.body.Title)
+
+    let response = await stationModel.findByIdAndUpdate({
+        _id: req.body.id
+    }, {
+        Title: req.body.Title
+    });
+
+    res.sendStatus(response);
 }
 
 const charge_remove = async (req, res) => {
@@ -148,5 +152,6 @@ module.exports = {
     charge_list_get,
     charge_get,
     charge_post,
+    charge_update,
     charge_remove
 };
