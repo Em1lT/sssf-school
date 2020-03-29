@@ -93,7 +93,11 @@ const charge_get_within_coordinate = async (req) => {
 const charge_post = async (req, res) => {
     try {
 
-        console.log(req.body.Connection[0].id);
+
+        const connections = []
+        req.body.Connections.forEach(item => {
+            connections.push(item);
+        })
 
         const station = await stationModel.create({
             Title: req.body.Title,
@@ -105,9 +109,7 @@ const charge_post = async (req, res) => {
                 type: "Point",
                 coordinates: [req.body.Location.lng, req.body.Location.lat],
             },
-            Connections : [
-                req.body.Connection[0].id
-            ]
+            Connections : connections
         })
 
         //Create a connection to db. You could make your own end point for it
