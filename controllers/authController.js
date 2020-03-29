@@ -15,10 +15,10 @@ const login = async (req, res) => {
 
 const register = async (req, res) => {
     const post = await userModel.create({
-        username: req.body.name,
+        name: req.body.name,
         password: req.body.password,
     })
-    res.send("user added: " + req.body.username);
+    res.send("user added: " + req.body.name);
 }
 
 module.exports = {
