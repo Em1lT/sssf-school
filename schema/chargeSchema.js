@@ -380,7 +380,7 @@ const Mutation = new GraphQLObjectType({
             }
         }),
         modifyStation: {
-            type: station,
+            type: stationType,
             description: 'Modify charge station',
             args: {
                 id: {

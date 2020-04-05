@@ -6,7 +6,7 @@ const graphqlHTTP = require('express-graphql');
 const MyGraphQLSchema = require('./schema/schema');
 const ChargeSchema = require('./schema/chargeSchema');
 const connectionModel = require('./model/connection');
-
+const authRoute = require('./routes/authRoute');
 const db = require('./module/db')
 const app = express();
 
