@@ -216,6 +216,57 @@ const RootQuery = new GraphQLObjectType({
             resolve(parent, args) {
                 return LevelIDModel.find()
             },
+        },
+        ByLocation: {
+            type: stationType,
+            description: 'Get one chargeStation with id',
+            args: {
+                topLeft: {
+                    type: new GraphQLList(GraphQLFloat)
+                },
+                topRight: {
+                    type: new GraphQLList(GraphQLFloat)
+                },
+                bottomRight: {
+                    type: new GraphQLList(GraphQLFloat)
+                }
+            },
+            resolve: async (parent, args) => {
+
+                // Input longitude before latitude!
+                const polygon = {
+                    type: 'Polygon',
+                    coordinates: [
+                        [
+                            [args.topLeft[0], args.topLeft[1]],
+                            [args.topRight[0], args.topRight[1]],
+                            [args.bottomRight[0], args.bottomRight[1]],
+                            [args.topLeft[0], args.topLeft[1]]
+                        ]
+                    ]
+                }
+                try {
+                    return await stationModel.find({}).where('Location').within(polygon).populate([{
+                        path: "Connections",
+                        model: "Connection",
+                        populate: [{
+                                path: "ConnectionTypeID",
+                                model: "ConnectionType"
+                            },
+                            {
+                                path: "CurrentTypeID",
+                                model: "CurrentType"
+                            },
+                            {
+                                path: "LevelID",
+                                model: "Level"
+                            }
+                        ]
+                    }])
+                } catch (e) {
+                    return new Error(e.message);
+                }
+            },
         }
     }
 });
@@ -277,21 +328,27 @@ const Mutation = new GraphQLObjectType({
                     type: new GraphQLNonNull(new GraphQLList(CoordinateInput))
                 }
             },
-            resolve: async (parent, args) => {
+            resolve: async (parent, args, {req, res, checkAuth}) => {
 
-                let connections = await saveConnections(args.Connections)
-                let station = new stationModel({
-                    Title: args.Title,
-                    AddressLine1: args.AddressLine1,
-                    Town: args.Town,
-                    StateOrProvince: args.StateOrProvince,
-                    Postcode: args.Postcode,
-                    Connections: connections,
-                    Location: {
-                        coordinates: args.Location[0].coordinates
-                    }
-                })
-                return station.save();
+                checkAuth(req, res);
+                try {
+                    let connections = await saveConnections(args.Connections)
+                    let station = new stationModel({
+                        Title: args.Title,
+                        AddressLine1: args.AddressLine1,
+                        Town: args.Town,
+                        StateOrProvince: args.StateOrProvince,
+                        Postcode: args.Postcode,
+                        Connections: connections,
+                        Location: {
+                            coordinates: args.Location[0].coordinates
+                        }
+                    })
+                    return station.save();
+                } catch (e) {
+                return new Error(e.message);
+                }
+
             },
         },
         removeStation: ({
@@ -302,11 +359,18 @@ const Mutation = new GraphQLObjectType({
                     type: new GraphQLNonNull(GraphQLID)
                 },
             },
-            resolve: async (parent, args) => {
+            resolve: async (parent, args, { req, res, checkAuth}) => {
 
-                const station = await stationModel.findByIdAndDelete({_id: args.id})
-                await deleteConncetions(station.Connections);
-                return station;
+                checkAuth(req, res);
+                try {
+                    const station = await stationModel.findByIdAndDelete({
+                        _id: args.id
+                    })
+                    await deleteConncetions(station.Connections);
+                    return station;
+                } catch (e) {
+                    return new Error(e.message);
+                }
                 /*
                 return stationModel.findByIdAndDelete({
                     _id: args.id
@@ -314,7 +378,31 @@ const Mutation = new GraphQLObjectType({
                     await deleteConncetions(data.Connections);
                 })*/
             }
-        })
+        }),
+        modifyStation: {
+            type: station,
+            description: 'Modify charge station',
+            args: {
+                id: {
+                    type: new GraphQLNonNull(GraphQLID)
+                },
+                Title: {
+                    type: GraphQLString
+                },
+            },
+            resolve: async (parent, args, {req,res,checkAuth}) => {
+                try {
+                    checkAuth(req, res);
+                    return await stationModel.findByIdAndUpdate(args.id, {
+                        Title: args.Title
+                    }, {
+                        new: true
+                    });
+                } catch (e) {
+                    return new Error(e.message);
+                }
+            },
+        },
     },
 });
 

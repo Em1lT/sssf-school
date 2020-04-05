@@ -11,8 +11,11 @@ const db = require('./module/db')
 const app = express();
 
 const auth = (req, res, next) => {
-    req.user = true;
-    next();
+    passport.authenticate('jwt', {session: false}, (err, user) =>{
+        if (err || !user) {
+            throw new Error('Not authenticated');
+        }
+    })(req, res)
 };
 
 const checkAuth = (req, res) => {
@@ -22,7 +25,7 @@ const checkAuth = (req, res) => {
 };
 
 app.use(auth);
-
+app.use('/auth', authRoute);
 
 /*test mongodb querys*/
 app.use('/test', async (req, res) => {
@@ -42,16 +45,16 @@ app.use(
     });
 
 
-app.use(
-    '/graphql',
-    graphqlHTTP({
-        schema: ChargeSchema,
-        graphiql: true,
-    })
-)
+    app.use(
+        '/graphql', (req, res) => {
+          graphqlHTTP({
+            schema: MyGraphQLSchema,
+            graphiql: true,
+            context: {req, res, checkAuth},
+          })(req, res);
+        });
 
-
-console.log("Graphql started!")
-console.log("Graphql1 started!")
+console.log("Graphql started: Charge Schema!")
+console.log("Graphql1 started!: Animal Schema!")
 
 app.listen(3000);
