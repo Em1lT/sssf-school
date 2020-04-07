@@ -5,6 +5,8 @@ const userModel = require('../model/userModel');
 const passportJWT = require("passport-jwt");
 const JWTStrategy = passportJWT.Strategy;
 const ExtractJWT = passportJWT.ExtractJwt;
+const bcrypt = require('bcrypt');
+
 
 passport.serializeUser(function (user, done) {
     console.log('Serialize user called.');
@@ -21,7 +23,6 @@ passport.deserializeUser(function (id, done) {
 // local strategy for username password login
 passport.use(new Strategy(
     async (username, password, done) => {
-
         try {
             const user = await userModel.findOne({
                 name: username
@@ -33,8 +34,8 @@ passport.use(new Strategy(
                     message: 'Incorrect username'
                 });
             }
-
-            if (user.password !== password) {
+            let pass = await bcrypt.compareSync(password, user.password)
+            if (pass) {
 
                 return done(null, false, {
                     message: 'Incorrect password.'
