@@ -35,12 +35,13 @@ passport.use(new Strategy(
                 });
             }
             let pass = await bcrypt.compareSync(password, user.password)
-            if (pass) {
-
+            if (!pass) {
                 return done(null, false, {
                     message: 'Incorrect password.'
                 });
             }
+            delete user.password;
+            
             return done(null, {
                 ...user
             }, {

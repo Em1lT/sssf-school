@@ -27,15 +27,15 @@ const checkAuth = (req, res) => {
     if (!req.user)
         throw new Error('Not authenticated');
 };
-/*
-Use on the server
+
 app.use(function(req, res, next) {
   if ((req.get('X-Forwarded-Proto') !== 'https')) {
     res.redirect('https://' + req.get('Host') + req.url);
   } else
     next();
 });
-*/
+
+
 //app.use(auth);
 app.use(helmet());
 app.use(passport.initialize());
