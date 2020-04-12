@@ -10,9 +10,7 @@ const ChargeSchema = require('./schema/chargeSchema');
 const bodyParser = require('body-parser');
 const connectionModel = require('./model/connection');
 const authRoute = require('./routes/authRoute');
-const db = require('./module/db')
 const app = express();
-const bcrypt = require('bcrypt');
 
 const auth = (req, res, next) => {
     passport.authenticate('jwt', {session: false}, (err, user) =>{
@@ -27,14 +25,6 @@ const checkAuth = (req, res) => {
     if (!req.user)
         throw new Error('Not authenticated');
 };
-
-app.use(function(req, res, next) {
-  if ((req.get('X-Forwarded-Proto') !== 'https')) {
-    res.redirect('https://' + req.get('Host') + req.url);
-  } else
-    next();
-});
-
 
 //app.use(auth);
 app.use(helmet());
@@ -73,4 +63,9 @@ app.use(
 console.log("Graphql started: Charge Schema!")
 console.log("Graphql1 started!: Animal Schema!")
 
-app.listen(3000);
+process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+if (process.env.NODE_ENV === 'production') {
+  require('./production')(app, process.env.PORT);
+} else {
+  require('./localhost')(app, process.env.HTTPS_PORT, process.env.HTTP_PORT);
+}
