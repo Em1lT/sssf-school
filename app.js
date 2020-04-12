@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const connectionModel = require('./model/connection');
 const authRoute = require('./routes/authRoute');
 const app = express();
+const db = require('./module/db');
 
 const auth = (req, res, next) => {
     passport.authenticate('jwt', {session: false}, (err, user) =>{

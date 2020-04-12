@@ -40,10 +40,12 @@ passport.use(new Strategy(
                     message: 'Incorrect password.'
                 });
             }
-            delete user.password;
-            
+            let newUser = {
+                _id: user._id,
+                name: user.name
+            }
             return done(null, {
-                ...user
+                ...newUser
             }, {
                 message: 'Logged In Successfully'
             }); // use spread syntax to create shallow copy to get rid of binary row type
