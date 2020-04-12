@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Socket.IO chat</title>
+</head>
+
+<body>
+  <ul id="messages"></ul>
+  <form action="">
+    <select id="rooms">
+      <option value="Room1">Room 1</option>
+      <option value="Room2">Room 2</option>
+      <option value="Room3">Room 3</option>
+    </select>
+    <input id="name" autocomplete="off" placeholder="Name" />
+    <input id="message" autocomplete="off" /><button>Send</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+
+  <script>
+    var socket = io();
+  </script>
+  <script>
+    $(document).ready(() => {
+      let target = "Room1"
+      let chatRoom = 'chat message'
+      $(() => {
+        $('#rooms').on('change', (event) => {
+          socket.emit('leave', target)
+          target = event.target.value
+          socket.emit('join', event.target.value)
+        });
+        $('form').submit((event) => {
+          event.preventDefault();
+          socket.emit('chat message', {room: target, message: $('#name').val() + ": " + $('#message').val()});
+          $('#message').val('');
+          return false;
+        });
+      });
+      socket.on('chat message', (msg) => {
+        $('#messages').append($('<li>').text(msg));
+      });
+    });
+  </script>
+</body>
+
+</html>
