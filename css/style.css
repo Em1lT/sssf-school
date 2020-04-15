@@ -1,0 +1,41 @@
+@font-face {
+    font-family: quicksand;
+    src: url(../css/quicksand-light.woff2)
+}
+
+
+body {
+    font-family: quicksand;
+  }
+  
+  /* Make content area fill the entire browser window */
+  html,
+  .fullscreen {
+    display: flex;
+    height: 100%;
+    background-image: url(../images/3.jpg);
+    background-repeat: no-repeat;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+
+  .icon {
+    width: 10%;
+    margin: auto;
+    height: 10%;
+
+  }
+  img {
+    display: flex;
+  }
+  
+  /* Center the content in the browser window */
+  .container {
+    margin: auto;
+    text-align: center;
+  }
+  
+  .title {
+    font-size: 3rem;
+  }
