@@ -1,6 +1,7 @@
 'use strict';
 self.importScripts('./js/fetchGQL.js');
 self.importScripts('./js/idb.js');
+self.importScripts('./js/main.js');
 const cacheName = 'hello-pwa';
 const filesToCache = [
   './',
